@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: Cust;
+    src: url(./daily-spark-daily-spark-sans-serif-700.otf);
+}
+
+@theme {
+    --font-cust: Cust
+}

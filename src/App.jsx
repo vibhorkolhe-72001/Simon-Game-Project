@@ -10,7 +10,6 @@ import start from "./assets/play.svg";
 import resets from "./assets/reset.svg";
 import scores from "./assets/score.svg";
 import gameover from "./assets/gameover.mp3";
-import gameovervideo from "./assets/aa.mp4";
 import levelss from "./assets/levelup (1).svg";
 import levelupaudio from "./assets/level-up-05-326133.mp3";
 
@@ -172,7 +171,7 @@ function App() {
       {loading ? (
         // Loader Screen
         <div className="h-screen w-screen bg-black flex justify-center items-center" style={{ backgroundImage: `url(${bg})` }}>
-          <DotLottieReact className="size-89" src="./src/assets/Loading.lottie" loop autoplay />
+          <DotLottieReact className="size-89" src="/Loading.lottie" loop autoplay />
         </div>
       ) : (
         <div
@@ -226,7 +225,7 @@ function App() {
           {gameovers && (
             <div className="absolute top-0 left-0 h-full w-full z-10 flex justify-center items-center">
               <div className="h-full w-full flex justify-center items-center">
-                <DotLottieReact className="size-[300px] relative bottom-10" src="./src/assets/Game Over.lottie" loop autoplay />
+                <DotLottieReact className="size-[300px] relative bottom-10" src="/Game Over.lottie" loop autoplay />
               </div>
             </div>
           )}
@@ -241,7 +240,7 @@ function App() {
                     <span className="relative right-1 bottom-18">{round}</span>
                   </motion.h1>
                   <div className="absolute scale-150">
-                    <DotLottieReact src="./src/assets/Confetti.lottie" loop autoplay />
+                    <DotLottieReact src="/Confetti.lottie" loop autoplay />
                   </div>
                 </div>
               </div>
@@ -254,9 +253,9 @@ function App() {
               <div className="relative h-full w-full flex justify-center items-center">
                 <div className="h-full w-full relative flex flex-col items-center justify-center">
                   <div className="flex justify-center items-center relative h-full w-full bottom-13">
-                    <DotLottieReact className="absolute z-10" src="./src/assets/Rewards and Discounts.lottie" loop autoplay />
-                    <DotLottieReact className="absolute " src="./src/assets/Reward light effect.lottie" loop autoplay />
-                    <DotLottieReact className="absolute z-20" src="./src/assets/Coin.lottie" loop autoplay />
+                    <DotLottieReact className="absolute z-10" src="/Rewards and Discounts.lottie" loop autoplay />
+                    <DotLottieReact className="absolute " src="/Reward light effect.lottie" loop autoplay />
+                    <DotLottieReact className="absolute z-20" src="/Coin.lottie" loop autoplay />
                     <h1 className="z-50 font-cust text-4xl text-white top-20 relative">100 Pts</h1>
                   </div>
                 </div>

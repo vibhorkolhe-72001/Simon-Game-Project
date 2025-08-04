@@ -23,6 +23,30 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const preloadLotties = async () => {
+      const lotties = [
+        "/Loading.lottie",
+        "/Game Over.lottie",
+        "/Confetti.lottie",
+        "/Rewards and Discounts.lottie",
+        "/Reward light effect.lottie",
+        "/Coin.lottie",
+      ];
+
+      await Promise.all(
+        lotties.map((url) =>
+          fetch(url)
+            .then((res) => res.blob()) // convert to blob to simulate full load
+            .then(() => console.log(`Preloaded: ${url}`))
+            .catch((err) => console.error(`Error preloading ${url}`, err))
+        )
+      );
+    };
+
+    preloadLotties();
+  }, []);
+
 
   // Available colors
   const color = ["green", "red", "orange", "blue"];

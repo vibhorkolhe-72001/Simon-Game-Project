@@ -13,39 +13,56 @@ import gameover from "./assets/gameover.mp3";
 import levelss from "./assets/levelup (1).svg";
 import levelupaudio from "./assets/level-up-05-326133.mp3";
 
+import gameovergif from "/original-a561071bde0f97f338014ce847a37f1c.gif";
+
+
 function App() {
   // Loader
   const [loading, setloading] = useState(true);
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setloading(false);
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const preloadLotties = async () => {
-      const lotties = [
-        "/Loading.lottie",
-        "/Game Over.lottie",
-        "/Confetti.lottie",
-        "/Rewards and Discounts.lottie",
-        "/Reward light effect.lottie",
-        "/Coin.lottie",
-      ];
-
-      await Promise.all(
-        lotties.map((url) =>
-          fetch(url)
-            .then((res) => res.blob()) // convert to blob to simulate full load
-            .then(() => console.log(`Preloaded: ${url}`))
-            .catch((err) => console.error(`Error preloading ${url}`, err))
-        )
-      );
+    const loadImages = () => {
+      const imageSources = [bg, start, resets, scores, levelss, gameovergif];
+      const promises = imageSources.map((src) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = src;
+          img.onload = resolve;
+          img.onerror = reject;
+        });
+      });
+      return Promise.all(promises);
     };
 
-    preloadLotties();
+    const loadAudios = () => {
+      const audioSources = [green, red, orange, blue, levelupaudio, gameover];
+      const promises = audioSources.map((src) => {
+        return new Promise((resolve, reject) => {
+          const audio = new Audio();
+          audio.src = src;
+          audio.oncanplaythrough = resolve;
+          audio.onerror = reject;
+        });
+      });
+      return Promise.all(promises);
+    };
+
+    const loadAll = async () => {
+      try {
+        await Promise.all([
+          loadImages(),
+          loadAudios(),
+          new Promise((resolve) => setTimeout(resolve, 5000)),
+        ]);
+        setloading(false);
+      } catch (error) {
+        console.error("Asset loading error:", error);
+        setloading(false);
+      }
+    };
+
+    loadAll();
   }, []);
+
 
 
   // Available colors
@@ -119,12 +136,12 @@ function App() {
       // setTimeout(() => setlevel(false), 2100);
     }
     const projectedScore = highscore + 10;
-    // Show bonus animation every 30 points
-    if (newround > 1 && projectedScore % 30 === 0) {
+    // Show bonus animation every 40 points
+    if (newround > 1 && projectedScore % 40 === 0) {
       setbonus(true);
       playSound("levelup");
       sethighscore((pre) => pre + 100);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 4000));
       setbonus(false);
       await new Promise((resolve) => setTimeout(resolve, 200));
       // setTimeout(() => setbonus(false), 2100);
@@ -142,7 +159,7 @@ function App() {
       playSound(colorFlash);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setColorFlash("");
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 400));
     }
     setBoxDisable(false);
   };
@@ -158,7 +175,7 @@ function App() {
 
     setActiveUserColor(userColor);
     playSound(userColor);
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 400));
     setActiveUserColor("");
 
     const currentIndex = newUserSeq.length - 1;
@@ -194,46 +211,46 @@ function App() {
     <>
       {loading ? (
         // Loader Screen
-        <div className="h-screen w-screen bg-black flex justify-center items-center" style={{ backgroundImage: `url(${bg})` }}>
-          <DotLottieReact className="size-89" src="/Loading.lottie" loop autoplay />
+        <div className="h-screen w-screen bg-white flex justify-center items-center" >
+          <DotLottieReact className="size-89" src="/games icon.lottie" loop autoplay />
         </div>
       ) : (
         <div
-          className="relative min-h-screen w-full bg-no-repeat bg-cover p-10 max-sm:p-5 flex justify-center items-center"
+          className="relative min-h-screen w-full bg-no-repeat bg-cover p-10 max-sm:p-5 flex justify-center items-center overflow-hidden"
           style={{ backgroundImage: `url(${bg})` }}
         >
           {/* Main game container */}
-          <div className="h-full w-full text-white border-2 flex flex-col gap-2 p-2">
+          <div className="h-full w-full text-white  flex flex-col gap-2 p-2">
 
             {/* Header with title and score */}
-            <div className="h-full w-full text-white border flex justify-between items-center px-10 max-lg:flex-col max-lg:p-10">
-              <h1 className="text-4xl capitalize text-white font-cust max-lg:text-5xl max-sm:text-4xl text-center lg:text-6xl">simon color game</h1>
+            <div className="h-full w-full text-white flex justify-between items-center px-10 max-lg:flex-col max-lg:p-10">
+              <h1 className="capitalize text-white font-cust max-lg:text-4xl max-sm:text-4xl text-center lg:text-5xl">simon color game</h1>
               <div className="relative px-10 py-2">
                 <img src={scores} alt="" />
-                <div className="absolute top-0 left-0 flex items-center justify-center text-xl h-full w-full font-cust flex-col">
+                <div className="absolute top-0 left-0 flex items-center justify-center sm:text-xl h-full w-full font-cust flex-col xs:text-[15px]">
                   <h1>High Score </h1>
-                  <p className="text-2xl">{highscore}</p>
+                  <p className="sm:text-2xl xs:text-[15px]">{highscore}</p>
                 </div>
               </div>
             </div>
 
             {/* Color buttons */}
-            <div className="relative h-full w-full text-white border flex justify-center items-center gap-2 p-2">
-              <div className="absolute size-14 text-2xl border bg-gray-800 rounded-full text-white flex justify-center items-center z-10">
+            <div className="relative h-full w-full text-white flex justify-center items-center gap-2 p-2">
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute size-14 sm:text-2xl xs:text-[18px] border bg-gray-800 rounded-full text-white flex justify-center items-center z-10">
                 <h1>{round}</h1>
+              </motion.div>
+              <div className="flex flex-col gap-2">
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className={`xs:size-40  sm:size-40 md:size-52  transition duration-200 ease-in-out border-2 ${colorFlash === "green" ? "bg-white" : "bg-green-500"} ${activeUserColor === "green" ? "scale-95" : "scale-100"}`} onClick={() => !boxDisable && handleClick(0)}></motion.div>
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className={`xs:size-40  sm:size-40 md:size-52  transition duration-200 ease-in-out border-2 ${colorFlash === "red" ? "bg-white" : "bg-red-500"} ${activeUserColor === "red" ? "scale-95" : "scale-100"}`} onClick={() => !boxDisable && handleClick(1)}></motion.div>
               </div>
               <div className="flex flex-col gap-2">
-                <div className={`size-52 max-sm:size-40 transition duration-200 ease-in-out border-2 ${colorFlash === "green" ? "bg-white" : "bg-green-500"} ${activeUserColor === "green" ? "scale-95" : "scale-100"}`} onClick={() => !boxDisable && handleClick(0)}></div>
-                <div className={`size-52 max-sm:size-40 transition duration-200 ease-in-out border-2 ${colorFlash === "red" ? "bg-white" : "bg-red-500"} ${activeUserColor === "red" ? "scale-95" : "scale-100"}`} onClick={() => !boxDisable && handleClick(1)}></div>
-              </div>
-              <div className="flex flex-col gap-2">
-                <div className={`size-52 max-sm:size-40 transition duration-200 ease-in-out border-2 ${colorFlash === "orange" ? "bg-white" : "bg-orange-300"} ${activeUserColor === "orange" ? "scale-95" : "scale-100"}`} onClick={() => !boxDisable && handleClick(2)}></div>
-                <div className={`size-52 max-sm:size-40 transition duration-200 ease-in-out border-2 ${colorFlash === "blue" ? "bg-white" : "bg-blue-500"} ${activeUserColor === "blue" ? "scale-95" : "scale-100"}`} onClick={() => !boxDisable && handleClick(3)}></div>
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className={`xs:size-40  sm:size-40 md:size-52  transition duration-200 ease-in-out border-2 ${colorFlash === "orange" ? "bg-white" : "bg-orange-400"} ${activeUserColor === "orange" ? "scale-95" : "scale-100"}`} onClick={() => !boxDisable && handleClick(2)}></motion.div>
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className={`xs:size-40  sm:size-40 md:size-52  transition duration-200 ease-in-out border-2 ${colorFlash === "blue" ? "bg-white" : "bg-blue-500"} ${activeUserColor === "blue" ? "scale-95" : "scale-100"}`} onClick={() => !boxDisable && handleClick(3)}></motion.div>
               </div>
             </div>
 
             {/* Buttons for start and reset */}
-            <div className="h-full w-full text-white border flex flex-col justify-center items-center gap-2">
+            <div className="h-full w-full text-white  flex flex-col justify-center items-center gap-2">
               <div className="flex justify-center items-center gap-10">
                 <button className="px-10 py-2 active:scale-95 transition-transform duration-100" onClick={randomColor} disabled={isPlaying}>
                   <img src={start} className="size-50" alt="Start" />
@@ -249,7 +266,8 @@ function App() {
           {gameovers && (
             <div className="absolute top-0 left-0 h-full w-full z-10 flex justify-center items-center">
               <div className="h-full w-full flex justify-center items-center">
-                <DotLottieReact className="size-[300px] relative bottom-10" src="/Game Over.lottie" loop autoplay />
+                <DotLottieReact className="size-[400px] relative bottom-10 max-sm:hidden" src="/Game Over.lottie" loop autoplay />
+                <img src={gameovergif} className="h-full w-full sm:hidden" alt="" />
               </div>
             </div>
           )}
@@ -259,7 +277,7 @@ function App() {
             {levels && (
               <div className="absolute top-0 left-0 h-full w-full z-10 flex justify-center items-center">
                 <div className="relative h-full w-full flex justify-center items-center">
-                  <motion.img initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="size-[300px]" src={levelss} alt="Level Up" />
+                  <motion.img initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="size-[400px]" src={levelss} alt="Level Up" />
                   <motion.h1 initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="text-5xl text-white absolute font-extrabold">
                     <span className="relative right-1 bottom-18">{round}</span>
                   </motion.h1>

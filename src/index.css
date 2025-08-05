@@ -6,5 +6,6 @@
 }
 
 @theme {
-    --font-cust: Cust
+    --font-cust: Cust;
+    --breakpoint-xs: 300px;
 }

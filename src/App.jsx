@@ -16,6 +16,7 @@ import levelupaudio from "./assets/level-up-05-326133.mp3";
 import gameovergif from "/original-a561071bde0f97f338014ce847a37f1c.gif";
 
 
+
 function App() {
   // Loader
   const [loading, setloading] = useState(true);
@@ -63,7 +64,7 @@ function App() {
     loadAll();
   }, []);
 
-
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
   // Available colors
   const color = ["green", "red", "orange", "blue"];
@@ -83,6 +84,8 @@ function App() {
   const [bonus, setbonus] = useState(false);
   const [highscore, sethighscore] = useState(0);
   const cancelAnimation = useRef(false);
+  const [showInstructions, setShowInstructions] = useState(false);
+
 
   // Audio refs (initialized in useEffect)
   const sounds = useRef({
@@ -130,10 +133,10 @@ function App() {
     if (round) {
       setlevel(true);
       playSound("levelup");
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await delay(1000);
       setlevel(false);
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      // setTimeout(() => setlevel(false), 2100);
+      await delay(200);
+
     }
     const projectedScore = highscore + 10;
     // Show bonus animation every 40 points
@@ -141,10 +144,9 @@ function App() {
       setbonus(true);
       playSound("levelup");
       sethighscore((pre) => pre + 100);
-      await new Promise((resolve) => setTimeout(resolve, 4000));
+      await delay(4000);
       setbonus(false);
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      // setTimeout(() => setbonus(false), 2100);
+      await delay(200);
     }
 
     await sequenceAnimation(newgameSeq);
@@ -157,9 +159,9 @@ function App() {
       if (cancelAnimation.current) break;
       setColorFlash(colorFlash);
       playSound(colorFlash);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await delay(1000);
       setColorFlash("");
-      await new Promise((resolve) => setTimeout(resolve, 400));
+      await delay(400);
     }
     setBoxDisable(false);
   };
@@ -175,21 +177,21 @@ function App() {
 
     setActiveUserColor(userColor);
     playSound(userColor);
-    await new Promise((resolve) => setTimeout(resolve, 400));
+    await delay(400);
     setActiveUserColor("");
 
     const currentIndex = newUserSeq.length - 1;
     if (newUserSeq[currentIndex] !== gameSeq[currentIndex]) {
       playSound("gameover");
       setgameover(true);
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await delay(5000);
       setgameover(false);
       reset();
       return;
     }
 
     if (newUserSeq.length === gameSeq.length) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await delay(1000);
       sethighscore((prev) => prev + 10);
       await randomColor();
     }
@@ -206,6 +208,7 @@ function App() {
     setRound(0);
     sethighscore(0);
   };
+
 
   return (
     <>
@@ -258,6 +261,13 @@ function App() {
                 <button className="px-10 py-2 active:scale-95 transition-transform duration-100" onClick={reset}>
                   <img src={resets} alt="Reset" />
                 </button>
+                <button
+                  className="px-10 py-2 active:scale-95 transition-transform duration-100 flex justify-center items-center"
+                  onClick={() => setShowInstructions(true)}
+                >
+                  <DotLottieReact className="size-[100px]" src="/Notification Bell.lottie" loop autoplay />
+                </button>
+
               </div>
             </div>
           </div>
@@ -277,8 +287,8 @@ function App() {
             {levels && (
               <div className="absolute top-0 left-0 h-full w-full z-10 flex justify-center items-center">
                 <div className="relative h-full w-full flex justify-center items-center">
-                  <motion.img initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="size-[400px]" src={levelss} alt="Level Up" />
-                  <motion.h1 initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="text-5xl text-white absolute font-extrabold">
+                  <motion.img initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="size-[300px]" src={levelss} alt="Level Up" />
+                  <motion.h1 initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="text-4xl text-white absolute font-extrabold">
                     <span className="relative right-1 bottom-18">{round}</span>
                   </motion.h1>
                   <div className="absolute scale-150">
@@ -304,6 +314,50 @@ function App() {
               </div>
             </div>
           )}
+
+          {/* Instruction Section */}
+          <AnimatePresence>
+            {showInstructions && (
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="fixed inset-0 z-50 bg-opacity-70 flex items-center justify-center px-4 sm:px-6">
+                <div className="bg-white text-black rounded-xl w-full max-w-lg p-5 sm:p-8 shadow-lg space-y-4 max-h-[90vh] overflow-y-auto">
+                  <h2 className="text-xl sm:text-2xl font-bold text-center font-cust">How to Play</h2>
+                  <ul className="list-disc list-inside text-sm sm:text-base space-y-2">
+                    <li>
+                      Click the <strong>▶ Start</strong> button to begin the game.
+                    </li>
+                    <li>
+                      Watch the sequence of flashing colors.
+                    </li>
+                    <li>
+                      Repeat the sequence by clicking the colors in the same order.
+                    </li>
+                    <li>
+                      Each correct round earns <strong>10 points</strong>.
+                    </li>
+                    <li>
+                      Bonus animations appear every few levels (with extra points!).
+                    </li>
+                    <li>
+                      The game ends if you click the wrong color.
+                    </li>
+                    <li>
+                      Press <strong>🔄 Reset</strong> to restart the game anytime.
+                    </li>
+                  </ul>
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => setShowInstructions(false)}
+                      className="mt-4 px-6 py-2 text-sm sm:text-base bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                    >
+                      Got it!
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+
         </div>
       )}
     </>

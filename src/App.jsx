@@ -84,7 +84,7 @@ function App() {
   const [bonus, setbonus] = useState(false);
   const [highscore, sethighscore] = useState(0);
   const cancelAnimation = useRef(false);
-  const [showInstructions, setShowInstructions] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(true);
 
 
   // Audio refs (initialized in useEffect)
@@ -261,13 +261,6 @@ function App() {
                 <button className="px-10 py-2 active:scale-95 transition-transform duration-100" onClick={reset}>
                   <img src={resets} alt="Reset" />
                 </button>
-                <button
-                  className="px-10 py-2 active:scale-95 transition-transform duration-100 flex justify-center items-center"
-                  onClick={() => setShowInstructions(true)}
-                >
-                  <DotLottieReact className="size-[100px]" src="/Notification Bell.lottie" loop autoplay />
-                </button>
-
               </div>
             </div>
           </div>
